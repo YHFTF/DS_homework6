@@ -133,7 +133,7 @@ void deQueue(QueueType *cQ, element *item)	//큐에서 데이터를 빼는 함�
 		return;
 	}
 	cQ->front = (cQ->front + 1) % MAX_QUEUE_SIZE;	//원형 큐이기 때문에 %연산을 사용하여 front의 위치를 변경
-	*item = cQ->queue[cQ->front];	//front의 위치에 있는 데이터를 item에 저장 (큐에서 데이터가 빠져나갈 때 데이터를 반환하기 위해 item에 저장)
+	*item = cQ->queue[cQ->front];	//front의 위치에 있는 데이터를 item에 저장 (프로그램에서 사용하지는 않지만 큐에서 데이터가 빠져나갈 때 데이터를 반환하기 위해 item에 저장)
 	return;
 }
 
