@@ -51,6 +51,7 @@ int main()
 	char command;
 
 	do{
+		printf("[----- [Park younghyeon] [2021041019] -----]");
 		printf("----------------------------------------------------------------\n");
 		printf("               Infix to Postfix, then Evaluation               \n");
 		printf("----------------------------------------------------------------\n");
@@ -181,21 +182,21 @@ void toPostfix()
             while (postfixStackTop != -1 && postfixStack[postfixStackTop] != '(')
             {
                 x = postfixPop();
-                charCat(&x); // 스택에서 꺼낸 문자를 postfixExp에 추가
+                charCat(&x); // 스택에서 pop한 문자를 postfixExp에 추가
             }
             postfixPop(); // 왼쪽 괄호는 pop하여 제거
         }
         // 왼쪽 괄호, 연산자인 경우
         else
         {
-            // 왼쪽 괄호는 우선적으로 push 왼쪽 괄호를 우선적으로 push 하지않으면 우선순위가 높은 연산자가 스택에 들어가게 되어 오류가 발생
+            //왼쪽 괄호를 우선적으로 push 하지않으면 우선순위가 높은 연산자가 스택에 들어가게 되어 오류가 발생
             if (*exp == '(')
             {
                 postfixPush(*exp);
             }
             else
             {
-                // 스택이 비어있거나 현재 연산자의 우선순위가 스택의 top 연산자보다 높은 경우
+                // 스택이 비어있거나 현재 연산자의 우선순위가 스택의 가장 위 연산자보다 높은 경우
                 if (postfixStackTop == -1 || getPriority(postfixStack[postfixStackTop]) < getPriority(*exp))
                 {
                     postfixPush(*exp);
@@ -205,7 +206,7 @@ void toPostfix()
                     while (postfixStackTop != -1 && getPriority(postfixStack[postfixStackTop]) >= getPriority(*exp))
                     {
                         x = postfixPop();
-                        charCat(&x); // 스택에서 꺼낸 문자를 postfixExp에 추가
+                        charCat(&x); // 스택에서 pop한 문자를 postfixExp에 추가
                     }
                     postfixPush(*exp);
                 }
@@ -267,9 +268,9 @@ void evaluation()
 		//연산자인 경우
 		else
 		{
-			x = evalPop();
-			y = evalPop();
-			switch(*exp)
+			x = evalPop();	//스택에서 pop한 값을 x에 저장
+			y = evalPop();	//스택에서 pop한 값을 y에 저장
+			switch(*exp)	//연산자에 따라 계산
 			{
 				case '-':
 					evalPush(y - x);
