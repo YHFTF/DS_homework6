@@ -33,18 +33,18 @@ int evalStackTop = -1;	   /* evalStack용 top */
 
 int evalResult = 0;	   /* 계산 결과를 저장 */
 
-void postfixpush(char x);
-char postfixPop();
-void evalPush(int x);
-int evalPop();
-void getInfix();
-precedence getToken(char symbol);
-precedence getPriority(char x);
-void charCat(char* c);
-void toPostfix();
-void debug();
-void reset();
-void evaluation();
+void postfixpush(char x);	//postfixStack에 push
+char postfixPop();	//postfixStack에서 pop
+void evalPush(int x);	//evalStack에 push
+int evalPop();	//evalStack에서 pop
+void getInfix();	//infixExp를 입력받는 함수
+precedence getToken(char symbol);	//문자를 받아서 우선순위를 반환하는 함수
+precedence getPriority(char x);	//문자를 받아서 우선순위를 반환하는 함수
+void charCat(char* c);	//문자를 받아서 postfixExp에 추가하는 함수
+void toPostfix();	//infixExp를 postfixExp로 변환하는 함수
+void debug();	//디버깅을 위한 함수
+void reset();	//초기화를 위한 함수
+void evaluation();	//postfixExp를 계산하는 함수
 
 int main()
 {
@@ -290,4 +290,3 @@ void evaluation()
 	}
 	evalResult = evalPop();
 }
-
