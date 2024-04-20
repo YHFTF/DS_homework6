@@ -160,22 +160,68 @@ void charCat(char* c)
  * infixExp의 문자를 하나씩 읽어가면서 stack을 이용하여 postfix로 변경한다.
  * 변경된 postfix는 postFixExp에 저장된다.
  */
+
 void toPostfix()
 {
-	/* infixExp의 문자 하나씩을 읽기위한 포인터 */
-	char *exp = infixExp;
-	char x; /* 문자하나를 임시로 저장하기 위한 변수 */
+    // infixExp의 문자를 하나씩 읽기 위한 포인터
+    char *exp = infixExp;
+    char x; // 문자 하나를 임시로 저장하기 위한 변수
 
-	/* exp를 증가시켜가면서, 문자를 읽고 postfix로 변경 */
-	while(*exp != '\0')
-	{
-		/* 필요한 로직 완성 */
+    // exp를 증가시켜가면서, 문자를 읽고 postfix로 변경
+    while (*exp != '\0')
+    {
+        // 피연산자인 경우
+        if (getToken(*exp) == operand)
+        {
+            charCat(exp);
+        }
+        // 오른쪽 괄호인 경우
+        else if (getToken(*exp) == rparen)
+        {
+            while (postfixStackTop != -1 && postfixStack[postfixStackTop] != '(')
+            {
+                x = postfixPop();
+                charCat(&x); // 스택에서 꺼낸 문자를 postfixExp에 추가
+            }
+            postfixPop(); // 왼쪽 괄호는 pop하여 제거
+        }
+        // 왼쪽 괄호, 연산자인 경우
+        else
+        {
+            // 왼쪽 괄호는 우선적으로 push 왼쪽 괄호를 우선적으로 push 하지않으면 우선순위가 높은 연산자가 스택에 들어가게 되어 오류가 발생
+            if (*exp == '(')
+            {
+                postfixPush(*exp);
+            }
+            else
+            {
+                // 스택이 비어있거나 현재 연산자의 우선순위가 스택의 top 연산자보다 높은 경우
+                if (postfixStackTop == -1 || getPriority(postfixStack[postfixStackTop]) < getPriority(*exp))
+                {
+                    postfixPush(*exp);
+                }
+                else
+                {
+                    while (postfixStackTop != -1 && getPriority(postfixStack[postfixStackTop]) >= getPriority(*exp))
+                    {
+                        x = postfixPop();
+                        charCat(&x); // 스택에서 꺼낸 문자를 postfixExp에 추가
+                    }
+                    postfixPush(*exp);
+                }
+            }
+        }
+        exp++;
+    }
 
-	}
-
-	/* 필요한 로직 완성 */
-
+    // 스택에 남아있는 연산자들을 모두 postfixExp에 추가
+    while (postfixStackTop != -1)
+    {
+        x = postfixPop();
+        charCat(&x);
+    }
 }
+
 void debug()
 {
 	printf("\n---DEBUG\n");
@@ -207,5 +253,40 @@ void reset()
 void evaluation()
 {
 	/* postfixExp, evalStack을 이용한 계산 */
+	char *exp = postfixExp;
+	char c;
+	int x, y;
+
+	while(*exp != '\0')
+	{
+		//피연산자인 경우
+		if(getToken(*exp) == operand)
+		{
+			evalPush(*exp - '0'); //evalStack 은 int 형이고 postfixExp는 char 형이기 때문에 문자를 숫자로 변환하여 스택에 push ('0'을 빼주는 이유는 아스키코드값을 숫자로 변환하기 위함)
+		}
+		//연산자인 경우
+		else
+		{
+			x = evalPop();
+			y = evalPop();
+			switch(*exp)
+			{
+				case '-':
+					evalPush(y - x);
+					break;
+				case '+':
+					evalPush(y + x);
+					break;
+				case '*':
+					evalPush(y * x);
+					break;
+				case '/':
+					evalPush(y / x);
+					break;
+			}
+		}
+		exp++;
+	}
+	evalResult = evalPop();
 }
 
